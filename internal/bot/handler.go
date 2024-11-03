@@ -3,10 +3,10 @@ package bot
 import (
 	"log/slog"
 	"strings"
-	"unicode/utf8"
 
 	"github.com/bwmarrin/discordgo"
 
+	"github.com/sysnote8main/readmyvc/internal/distext"
 	"github.com/sysnote8main/readmyvc/internal/diswrap"
 )
 
@@ -57,13 +57,8 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 		// TODO set speakerId
 		slog.Debug("TTS fired!", slog.String("userId", author.ID))
-		msgContent := m.Content
 		// TODO support change truncate size
-		if utf8.RuneCountInString(msgContent) > 30 {
-			slice := []rune(msgContent)
-			strarr := []string{string(slice[:30]), "いかりゃく"}
-			msgContent = strings.Join(strarr, " ")
-		}
+		msgContent := distext.Truncate(m.Content, "いかりゃく", 30)
 		voiceVox.TTS(msgContent, 8, vcData)
 	}
 }
